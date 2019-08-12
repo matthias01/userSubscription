@@ -15,22 +15,27 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::redirect('/','/blog');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/blog', 'BlogController@index')->name('blog.index');
+Route::get('/subscribe', ['middleware'=> 'cors', 'uses' => 'SubscriptionController@index'])->name('subscribe');
+Route::get('/payment', ['middleware'=> 'cors', 'uses' => 'SubscriptionController@payment'])->name('payment');
 
 Route::group(['middleware'=>'role:super-admin','auth'],function(){
 	Route::resource('admin/permission', 'Admin\PermissionController');
     Route::resource('admin/role', 'Admin\RoleController');
     Route::resource('admin/user', 'Admin\UserController');
+
 });
 
 Route::group(['middleware'=>'auth'],function(){
-	
-    Route::view('admin/dashboard', 'admin.dashboard');
+
+    Route::view('admin', 'admin.dashboard');
+    Route::resource('admin/posts', 'Admin\PostsController');
 });
-
-
 
 
 
